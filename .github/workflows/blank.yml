@@ -25,9 +25,9 @@ jobs:
       - name: SSH 登录服务器并执行部署
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ SERVER_HOST }}
+          host: ${{ secrets.SERVER_HOST }}
           username: ${{ root }}
-          password: ${{ SERVER_PASSWORD }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd ~/blog
             git pull origin main
