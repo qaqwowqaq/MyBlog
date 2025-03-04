@@ -32,10 +32,14 @@ jobs:
             # 如果已有容器，停止并删除
             docker stop myblog-backend || true
             docker rm myblog-backend || true
+
+            echo "Docker image built successfully!!!"
             
             # 启动新容器
             docker run -d --name myblog-backend \
               -p 8000:8000 \
+              -v /var/www/staticfiles:/app/staticfiles \
+              -v /var/www/media:/app/media \
               --restart unless-stopped \
               myblog-backend
             
