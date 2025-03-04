@@ -34,7 +34,13 @@ jobs:
             docker rm myblog-backend || true
 
             echo "Docker image built successfully!!!"
-            
+
+            # 删除所有停止容器
+            docker rm $(docker ps -aq)
+
+            # 删除悬空镜像
+            docker image prune -f
+
             # 启动新容器
             docker run -d --name myblog-backend \
               -p 8000:8000 \
