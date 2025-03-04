@@ -161,6 +161,17 @@ CORS_ALLOW_ALL_ORIGINS = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# 添加以下配置
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# 可选: 添加 STATICFILES_DIRS 指定额外的静态文件目录
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# 确保 MEDIA 设置也存在
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

@@ -37,6 +37,20 @@ RUN CFLAGS="${MYSQLCLIENT_CFLAGS}" LDFLAGS="${MYSQLCLIENT_LDFLAGS}" pip install 
 # 复制项目文件
 COPY . .
 
+
+# 确保静态文件和媒体文件目录存在
+RUN mkdir -p /app/staticfiles /app/media \
+    && chmod -R 755 /app/staticfiles /app/media
+
+# 复制并设置 entrypoint 脚本
+COPY entrypoint.sh /entrypoint.sh
+RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh
+
+
+
 EXPOSE 8000
+
+# 运行 entrypoint.sh，并启动 Gunicorn
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "blog_project.wsgi:application"]
