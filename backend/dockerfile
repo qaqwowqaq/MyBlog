@@ -1,9 +1,11 @@
 # 构建阶段
 FROM python:3.12-slim AS builder
 
-# 替换为国内源
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
-    sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+# **手动创建 `/etc/apt/sources.list`**
+RUN echo "deb http://mirrors.ustc.edu.cn/debian bookworm main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb http://mirrors.ustc.edu.cn/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.ustc.edu.cn/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list && \
+    apt-get update
 
 # 使用 BuildKit 缓存
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -23,9 +25,11 @@ RUN pip wheel --no-cache-dir --wheel-dir /app/wheels -r requirements.txt
 # 最终阶段
 FROM python:3.12-slim
 
-# 替换为国内源
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
-    sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+# **手动创建 `/etc/apt/sources.list`**
+RUN echo "deb http://mirrors.ustc.edu.cn/debian bookworm main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb http://mirrors.ustc.edu.cn/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.ustc.edu.cn/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list && \
+    apt-get update
 
 # 设置工作目录
 WORKDIR /app
