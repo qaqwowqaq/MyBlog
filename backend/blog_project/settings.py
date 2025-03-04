@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog', # 博客核心应用
+    'rest_framework', # Django REST framework
+    'corsheaders', # 跨域资源共享
+    'coreapi', # CoreAPI
+    'drf_spectacular',
+    'rest_framework.authtoken', # 用于生成Token，提供用户认证
 ]
 
 MIDDLEWARE = [
@@ -87,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test',
         'USER': 'blog_admin',
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),  # 从环境变量获取密码
+        'PASSWORD': '123456',  # 从环境变量获取密码
         'HOST': '123.56.118.72',
         'PORT': '3306',
         'OPTIONS': {
@@ -116,6 +121,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# REST Framework设置
+REST_FRAMEWORK = {
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication', # 使用Token认证
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # 确保此行存在且正确
+}
+
+# Spectacular设置
+SPECTACULAR_SETTINGS = {
+    'TITLE': '博客API',
+    'DESCRIPTION': '个人博客系统的API文档',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -128,6 +156,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
