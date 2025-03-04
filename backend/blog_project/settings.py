@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'blog', # 博客核心应用
     'rest_framework', # Django REST framework
     'corsheaders', # 跨域资源共享
-    'coreapi', # CoreAPI
     'drf_spectacular',
     'rest_framework.authtoken', # 用于生成Token，提供用户认证
 ]
