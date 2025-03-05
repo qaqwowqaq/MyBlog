@@ -9,11 +9,28 @@ from .models import Category, Tag, Post, Comment, UserProfile, SiteSetting, Link
 from .serializers import (
     UserSerializer, UserProfileSerializer, CategorySerializer, 
     TagSerializer, PostListSerializer, PostDetailSerializer,
-    CommentSerializer, SiteSettingSerializer, LinkSerializer,UserRegistrationSerializer
+    CommentSerializer, SiteSettingSerializer, LinkSerializer,UserRegistrationSerializer,LoginSerializer
 )
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from drf_spectacular.utils import extend_schema
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+
+@extend_schema(
+    tags=['Authentication'],
+    request=LoginSerializer,
+    responses={200: LoginSerializer},
+    description='用户登录接口，返回JWT令牌'
+)
+class LoginView(APIView):
+    serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 # 自定义获取Token视图
 class CustomAuthToken(ObtainAuthToken):

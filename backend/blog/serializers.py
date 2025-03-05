@@ -1,7 +1,40 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Category, Tag, Post, Comment, UserProfile, SiteSetting, Link
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 
+# login serializer负责验证用户登录信息，返回access token和refresh token
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=255, write_only=True)
+    password = serializers.CharField(max_length=128, write_only=True, style={'input_type': 'password'})
+    access = serializers.CharField(read_only=True) 
+    refresh = serializers.CharField(read_only=True)
+    
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+        
+        if not username or not password:
+            raise serializers.ValidationError("用户名和密码不能为空")
+        
+        user = authenticate(username=username, password=password)
+        
+        if not user:
+            raise serializers.ValidationError("用户名或密码错误")
+        
+        if not user.is_active:
+            raise serializers.ValidationError("用户已被禁用")
+        
+        refresh = RefreshToken.for_user(user)
+        
+        return {
+            'username': user.username,
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user_id': user.id
+        }
+    
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     password2 = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
